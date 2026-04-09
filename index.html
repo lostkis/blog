@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STAR WARS ARCHIVE | 스타워즈 시리즈 소개</title>
+  <meta name="description" content="스타워즈 영화 시리즈를 한눈에 소개하는 세련된 랜딩페이지" />
+  <style>
+    :root {
+      --bg: #05070d;
+      --bg-soft: #0c1222;
+      --card: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #f3f7ff;
+      --muted: #aab7d1;
+      --yellow: #ffe81f;
+      --blue: #71b7ff;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+      --radius: 22px;
+      --max: 1200px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 20% 10%, rgba(113, 183, 255, 0.08), transparent 20%),
+        radial-gradient(circle at 80% 20%, rgba(255, 232, 31, 0.08), transparent 18%),
+        radial-gradient(circle at 50% 80%, rgba(255, 255, 255, 0.04), transparent 16%),
+        linear-gradient(180deg, #03050a 0%, #08101d 42%, #0a1221 100%);
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::before {
+      background-image:
+        radial-gradient(2px 2px at 12% 18%, rgba(255,255,255,.85) 50%, transparent 52%),
+        radial-gradient(1.5px 1.5px at 76% 12%, rgba(255,255,255,.8) 50%, transparent 52%),
+        radial-gradient(2px 2px at 25% 70%, rgba(255,255,255,.75) 50%, transparent 52%),
+        radial-gradient(1.5px 1.5px at 86% 62%, rgba(255,255,255,.75) 50%, transparent 52%),
+        radial-gradient(1.5px 1.5px at 44% 34%, rgba(255,255,255,.7) 50%, transparent 52%),
+        radial-gradient(2px 2px at 58% 86%, rgba(255,255,255,.7) 50%, transparent 52%),
+        radial-gradient(1.5px 1.5px at 8% 82%, rgba(255,255,255,.8) 50%, transparent 52%),
+        radial-gradient(1.5px 1.5px at 92% 28%, rgba(255,255,255,.85) 50%, transparent 52%);
+      opacity: .7;
+      animation: twinkle 8s linear infinite alternate;
+    }
+
+    body::after {
+      background:
+        linear-gradient(to bottom, rgba(255,255,255,0.02), transparent 25%),
+        linear-gradient(to top, rgba(255,255,255,0.02), transparent 18%);
+      opacity: .45;
+    }
+
+    @keyframes twinkle {
+      0% { opacity: 0.45; transform: translateY(0); }
+      100% { opacity: 0.85; transform: translateY(-6px); }
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(14px);
+      background: rgba(4, 8, 16, 0.66);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand strong {
+      font-size: 22px;
+      letter-spacing: 2px;
+      color: var(--yellow);
+    }
+
+    .brand span {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .menu {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      font-size: 14px;
+      color: #d7e2f3;
+    }
+
+    .menu a {
+      position: relative;
+      padding-bottom: 4px;
+    }
+
+    .menu a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      background: var(--yellow);
+      transition: .25s ease;
+    }
+
+    .menu a:hover::after {
+      width: 100%;
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 80px 20px 40px;
+      position: relative;
+      isolation: isolate;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      width: 720px;
+      height: 720px;
+      background: radial-gradient(circle, rgba(255,232,31,.16), transparent 58%);
+      left: 50%;
+      top: 45%;
+      transform: translate(-50%, -50%);
+      filter: blur(16px);
+      z-index: -1;
+    }
+
+    .hero-panel {
+      max-width: 1120px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .hero-copy {
+      animation: fadeUp .9s ease both;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255, 232, 31, 0.07);
+      border: 1px solid rgba(255, 232, 31, 0.22);
+      color: var(--yellow);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      margin: 0 0 18px;
+      font-size: clamp(38px, 6vw, 76px);
+      line-height: 1.04;
+      letter-spacing: -1px;
+    }
+
+    .hero h1 .accent {
+      color: var(--yellow);
+      text-shadow: 0 0 18px rgba(255, 232, 31, 0.18);
+    }
+
+    .hero p {
+      margin: 0 0 28px;
+      max-width: 700px;
+      color: #d5dff1;
+      font-size: clamp(16px, 2vw, 19px);
+      line-height: 1.8;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 160px;
+      padding: 15px 22px;
+      border-radius: 14px;
+      font-weight: 700;
+      transition: .25s ease;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ffe81f 0%, #ffd84d 100%);
+      color: #111827;
+      box-shadow: 0 12px 30px rgba(255, 232, 31, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 40px rgba(255, 232, 31, 0.28);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.12);
+      color: #f1f5fc;
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255, 232, 31, 0.4);
+      color: var(--yellow);
+    }
+
+    .hero-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 28px;
+      padding: 26px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp 1.1s ease both;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      background: linear-gradient(135deg, rgba(255,232,31,.18), transparent 30%, transparent 70%, rgba(113,183,255,.15));
+      z-index: 0;
+      opacity: .9;
+    }
+
+    .hero-card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card h2 {
+      margin: 0 0 16px;
+      color: var(--yellow);
+      font-size: 22px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .stat {
+      background: rgba(0,0,0,0.22);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 28px;
+      margin-bottom: 6px;
+      color: #fff;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    section {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 100px 20px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 34px;
+      flex-wrap: wrap;
+    }
+
+    .section-head h2 {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.15;
+    }
+
+    .section-head p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 760px;
+      line-height: 1.8;
+    }
+
+    .pill {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--yellow);
+      background: rgba(255, 232, 31, 0.06);
+      border: 1px solid rgba(255, 232, 31, 0.18);
+      padding: 8px 12px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      transition: transform .25s ease, border-color .25s ease, background .25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(255, 232, 31, 0.22);
+      background: rgba(255,255,255,0.07);
+    }
+
+    .card h3 {
+      margin: 0 0 12px;
+      color: #fff;
+      font-size: 22px;
+    }
+
+    .card p {
+      margin: 0;
+      color: #d2dced;
+      line-height: 1.8;
+    }
+
+    .intro .card h3 {
+      color: var(--yellow);
+    }
+
+    .episode-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 260px;
+    }
+
+    .episode-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.05), transparent 30%),
+        linear-gradient(135deg, rgba(255,232,31,.08), transparent 55%);
+      pointer-events: none;
+    }
+
+    .episode-top {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .episode-label {
+      display: inline-block;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: rgba(255, 232, 31, 0.1);
+      border: 1px solid rgba(255, 232, 31, 0.16);
+      color: var(--yellow);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .episode-era {
+      font-size: 12px;
+      color: #8fbfff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    .episode-card h3,
+    .episode-card p,
+    .episode-meta {
+      position: relative;
+      z-index: 1;
+    }
+
+    .episode-meta {
+      margin-top: 18px;
+      color: #9fb1ca;
+      font-size: 13px;
+    }
+
+    .character-card .role {
+      color: var(--yellow);
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: .5px;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 18px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .timeline-badge {
+      background: rgba(255, 232, 31, 0.08);
+      border: 1px solid rgba(255, 232, 31, 0.18);
+      border-radius: 18px;
+      color: var(--yellow);
+      font-weight: 800;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      text-align: center;
+      letter-spacing: .5px;
+    }
+
+    .timeline-content {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .timeline-content h3 {
+      margin: 0 0 10px;
+      font-size: 22px;
+    }
+
+    .timeline-content p {
+      margin: 0;
+      color: #d2dced;
+      line-height: 1.8;
+    }
+
+    .cta {
+      padding-bottom: 120px;
+    }
+
+    .cta-box {
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(255,232,31,.12), rgba(113,183,255,.08)),
+        rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 30px;
+      padding: 42px 28px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .cta-box::before {
+      content: "";
+      position: absolute;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(255,232,31,.18), transparent 70%);
+      right: -80px;
+      top: -80px;
+      pointer-events: none;
+    }
+
+    .cta-box h2 {
+      margin: 0 0 14px;
+      font-size: clamp(28px, 4vw, 44px);
+    }
+
+    .cta-box p {
+      margin: 0 auto 24px;
+      max-width: 760px;
+      color: #d4ddec;
+      line-height: 1.8;
+    }
+
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 26px 20px 42px;
+      text-align: center;
+      color: #93a6c2;
+      font-size: 14px;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .hero-panel,
+      .grid-3 {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .hero-panel {
+        align-items: stretch;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .menu {
+        gap: 12px;
+      }
+
+      .hero {
+        min-height: auto;
+        padding-top: 110px;
+      }
+
+      .hero-panel,
+      .grid-3,
+      .stats,
+      .timeline-item {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 82px 20px;
+      }
+
+      .timeline-badge {
+        min-height: 88px;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .hero h1 {
+        letter-spacing: -0.5px;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="nav">
+        <div class="brand">
+          <strong>STAR WARS</strong>
+          <span>Cinematic Archive</span>
+        </div>
+        <nav class="menu">
+          <a href="#intro">소개</a>
+          <a href="#episodes">에피소드</a>
+          <a href="#characters">주요 인물</a>
+          <a href="#timeline">흐름</a>
+          <a href="#ending">마무리</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-panel">
+          <div class="hero-copy">
+            <div class="eyebrow">AI Vibe Coding Project</div>
+            <h1>
+              은하계를 관통하는 전설,<br />
+              <span class="accent">스타워즈 영화 시리즈</span>
+            </h1>
+            <p>
+              스타워즈는 단순한 SF 영화가 아니라 세대를 이어 사랑받아 온 거대한 우주 서사입니다.
+              제다이와 시스, 공화국과 제국, 그리고 스카이워커 가문을 중심으로 펼쳐지는 장대한 이야기를
+              세련된 한 페이지로 정리했습니다.
+            </p>
+            <div class="hero-actions">
+              <a href="#episodes" class="btn btn-primary">시리즈 탐험하기</a>
+              <a href="#characters" class="btn btn-secondary">주요 인물 보기</a>
+            </div>
+          </div>
+
+          <div class="hero-card">
+            <div class="hero-card-inner">
+              <h2>Galaxy Overview</h2>
+              <div class="stats">
+                <div class="stat">
+                  <strong>9</strong>
+                  <span>메인 에피소드</span>
+                </div>
+                <div class="stat">
+                  <strong>3</strong>
+                  <span>주요 삼부작 구조</span>
+                </div>
+                <div class="stat">
+                  <strong>JEDI</strong>
+                  <span>희망과 수련의 상징</span>
+                </div>
+                <div class="stat">
+                  <strong>SITH</strong>
+                  <span>어둠과 권력의 상징</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="intro" class="intro reveal">
+        <div class="section-head">
+          <div>
+            <div class="pill">Introduction</div>
+            <h2>스타워즈의 매력은 왜 특별할까?</h2>
+          </div>
+          <p>
+            스타워즈는 선과 악의 대결이라는 익숙한 구조 위에 가족, 운명, 성장, 희생이라는 주제를 얹어
+            매우 강한 감정선을 만들어냅니다. 웅장한 음악, 독창적인 우주 비주얼, 상징적인 캐릭터가 더해져
+            지금까지도 가장 영향력 있는 영화 시리즈 중 하나로 평가됩니다.
+          </p>
+        </div>
+
+        <div class="grid-3">
+          <article class="card">
+            <h3>거대한 세계관</h3>
+            <p>
+              먼 은하계를 배경으로 제다이 기사단, 시스 군주, 은하 공화국, 제국, 반란군과 저항군이
+              끊임없이 충돌합니다. 설정이 방대하면서도 핵심 축이 분명해 몰입도가 높습니다.
+            </p>
+          </article>
+          <article class="card">
+            <h3>상징적인 서사</h3>
+            <p>
+              포스와 라이트세이버, 스승과 제자의 관계, 타락과 구원이라는 주제가 반복되며
+              스타워즈만의 철학적인 분위기를 형성합니다.
+            </p>
+          </article>
+          <article class="card">
+            <h3>세대를 잇는 이야기</h3>
+            <p>
+              아나킨에서 루크로, 다시 새로운 세대로 이어지는 흐름은 스타워즈를 한 편의 영화가 아니라
+              장대한 전설처럼 느끼게 만듭니다.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="episodes" class="reveal">
+        <div class="section-head">
+          <div>
+            <div class="pill">Episodes</div>
+            <h2>메인 영화 시리즈 한눈에 보기</h2>
+          </div>
+          <p>
+            스타워즈의 메인 사가는 총 9개의 에피소드로 구성되며, 크게 프리퀄, 오리지널, 시퀄 삼부작으로 나뉩니다.
+            각 작품은 독립적인 매력을 갖고 있으면서도 하나의 거대한 흐름으로 연결됩니다.
+          </p>
+        </div>
+
+        <div class="grid-3">
+          <article class="card episode-card">
+            <div class="episode-top">
+              <span class="episode-label">EPISODE I</span>
+              <span class="episode-era">Prequel</span>
+            </div>
+            <h3>보이지 않는 위험</h3>
+            <p>
+              어린 아나킨 스카이워커가 등장하며, 공화국의 불안과 제다이 기사단의 움직임이 본격적으로 드러납니다.
+            </p>
+            <div class="episode-meta">프리퀄의 시작점</div>
+          </article>
+
+          <article class="card episode-card">
+            <div class="episode-top">
+              <span class="episode-label">EPISODE II</span>
+              <span class="episode-era">Prequel</span>
+            </div>
+            <h3>클론의 습격</h3>
+            <p>
+              은하계의 정치적 긴장이 높아지고, 아나킨과 파드메의 관계가 전개되며 전쟁의 그림자가 짙어집니다.
+            </p>
+            <div class="episode-meta">클론 전쟁의 서막</div>
+          </article>
+
+          <article class="card episode-card">
+            <div class="episode-top">
+              <span class="episode-label">EPISODE III</span>
+              <span class="episode-era">Prequel</span>
+            </div>
+            <h3>시스의 복수</h3>
+            <p>
+              아나킨이 다스 베이더로 변해가는 비극이 펼쳐지며, 공화국은 무너지고 제국이 탄생합니다.
+            </p>
+            <div class="episode-meta">몰락과 탄생의 전환점</div>
+          </article>
+
+          <article class="card episode-card">
+            <div class="episode-top">
+              <span class="episode-label">EPISODE IV</span>
+              <span class="episode-era">Original</span>
+            </div>
+            <h3>새로운 희망</h3>
+            <p>
+              루크 스카이워커의 모험이 시작되며, 스타워즈의 상징적인 영웅 서사가 본격적으로 펼쳐집니다.
+            </p>
+            <div class="episode-meta">전설의 출발점</div>
+          </article>
+
+          <article class="card episode-card">
+            <div class="episode-top">
+              <span class="episode-label">EPISODE V</span>
+              <span class="episode-era">Original</span>
+            </div>
+            <h3>제국의 역습</h3>
+            <p>
+              시리즈 전체에서 가장 인상적인 반전과 함께 루크와 다스 베이더의 갈등이 더욱 깊어집니다.
+            </p>
+            <div class="episode-meta">가장 강렬한 긴장감</div>
+          </article>
+
+          <article class="card episode-card">
+            <div class="episode-top">
+              <span class="episode-label">EPISODE VI</span>
+              <span class="episode-era">Original</span>
+            </div>
+            <h3>제다이의 귀환</h3>
+            <p>
+              루크, 베이더, 황제의 최종 대결을 통해 오리지널 삼부작이 장대한 감정선과 함께 완성됩니다.
+            </p>
+            <div class="episode-meta">희망과 구원의 결말</div>
+          </article>
+
+          <article class="card episode-card">
+            <div class="episode-top">
+              <span class="episode-label">EPISODE VII</span>
+              <span class="episode-era">Sequel</span>
+            </div>
+            <h3>깨어난 포스</h3>
+            <p>
+              레이, 핀, 카일로 렌 등 새로운 세대가 등장하며 스카이워커 사가가 다시 움직이기 시작합니다.
+            </p>
+            <div class="episode-meta">새로운 세대의 시작</div>
+          </article>
+
+          <article class="card episode-card">
+            <div class="episode-top">
+              <span class="episode-label">EPISODE VIII</span>
+              <span class="episode-era">Sequel</span>
+            </div>
+            <h3>라스트 제다이</h3>
+            <p>
+              레이의 성장, 루크의 고뇌, 저항군의 위기를 통해 전통과 변화 사이의 긴장이 강조됩니다.
+            </p>
+            <div class="episode-meta">도전과 재해석</div>
+          </article>
+
+          <article class="card episode-card">
+            <div class="episode-top">
+              <span class="episode-label">EPISODE IX</span>
+              <span class="episode-era">Sequel</span>
+            </div>
+            <h3>라이즈 오브 스카이워커</h3>
+            <p>
+              여러 세대의 서사가 하나로 수렴되며, 스카이워커 가문의 긴 여정이 대단원의 막을 내립니다.
+            </p>
+            <div class="episode-meta">사가의 최종장</div>
+          </article>
+        </div>
+      </section>
+
+      <section id="characters" class="reveal">
+        <div class="section-head">
+          <div>
+            <div class="pill">Characters</div>
+            <h2>스타워즈를 빛낸 핵심 인물들</h2>
+          </div>
+          <p>
+            스타워즈의 진짜 힘은 캐릭터에 있습니다. 영웅과 악역이 단순한 구도로 그려지지 않고,
+            선택과 상처, 갈등과 구원이라는 감정선 위에서 입체적으로 살아 움직입니다.
+          </p>
+        </div>
+
+        <div class="grid-3">
+          <article class="card character-card">
+            <div class="role">JEDI HERO</div>
+            <h3>루크 스카이워커</h3>
+            <p>
+              평범한 청년에서 은하계의 희망으로 성장하는 대표 인물입니다.
+              스타워즈의 영웅 서사를 가장 상징적으로 보여줍니다.
+            </p>
+          </article>
+
+          <article class="card character-card">
+            <div class="role">DARK ICON</div>
+            <h3>다스 베이더</h3>
+            <p>
+              가장 상징적인 악역이자 동시에 가장 비극적인 인물입니다.
+              타락과 구원의 테마를 한 몸에 보여주는 존재입니다.
+            </p>
+          </article>
+
+          <article class="card character-card">
+            <div class="role">LEADER</div>
+            <h3>레이아 오르가나</h3>
+            <p>
+              강인함과 지성을 겸비한 지도자로, 반란군과 저항군의 중심축 역할을 수행합니다.
+            </p>
+          </article>
+
+          <article class="card character-card">
+            <div class="role">SMUGGLER</div>
+            <h3>한 솔로</h3>
+            <p>
+              자유분방한 매력과 인간적인 유머를 지닌 인물로, 스타워즈의 분위기를 더욱 풍성하게 만듭니다.
+            </p>
+          </article>
+
+          <article class="card character-card">
+            <div class="role">MASTER</div>
+            <h3>오비완 케노비</h3>
+            <p>
+              지혜로운 제다이 스승으로, 아나킨과 루크 모두에게 깊은 영향을 남긴 핵심 인물입니다.
+            </p>
+          </article>
+
+          <article class="card character-card">
+            <div class="role">NEW GENERATION</div>
+            <h3>레이</h3>
+            <p>
+              시퀄 시리즈를 이끄는 주인공으로, 자신의 정체성과 운명을 찾아가는 여정이 인상적입니다.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="timeline" class="reveal">
+        <div class="section-head">
+          <div>
+            <div class="pill">Timeline</div>
+            <h2>세 개의 삼부작으로 이해하는 스타워즈</h2>
+          </div>
+          <p>
+            처음 접하는 사람도 아래 구조로 보면 전체 흐름을 쉽게 이해할 수 있습니다.
+            스타워즈의 매력은 각 삼부작이 서로 다른 시대와 감성을 보여주면서도 하나의 전설로 이어진다는 점입니다.
+          </p>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-badge">TRILOGY I<br />EP I - III</div>
+            <div class="timeline-content">
+              <h3>프리퀄 삼부작</h3>
+              <p>
+                아나킨 스카이워커의 성장과 몰락, 그리고 공화국의 붕괴를 다룹니다.
+                이상이 어떻게 권력과 공포에 의해 무너질 수 있는지를 보여주는 비극적 서사입니다.
+              </p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-badge">TRILOGY II<br />EP IV - VI</div>
+            <div class="timeline-content">
+              <h3>오리지널 삼부작</h3>
+              <p>
+                루크 스카이워커를 중심으로 반란군과 제국의 대결이 전개됩니다.
+                스타워즈의 상징성과 대중적 인지도를 만든 핵심 축입니다.
+              </p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-badge">TRILOGY III<br />EP VII - IX</div>
+            <div class="timeline-content">
+              <h3>시퀄 삼부작</h3>
+              <p>
+                새로운 세대의 주인공들이 등장하며 스카이워커 사가를 마무리합니다.
+                전통과 계승, 새로운 시대의 의미를 다시 묻는 구조입니다.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="ending" class="cta reveal">
+        <div class="cta-box">
+          <h2>May the Force be with you.</h2>
+          <p>
+            이 페이지는 AI 협의체의 Vibe Coding 과제를 위해 제작된 스타워즈 소개 홈페이지입니다.
+            단일 <strong>index.html</strong> 파일만으로도 충분히 인상적인 결과물을 만들 수 있다는 점을 보여주기 위해
+            비주얼, 정보 구조, 반응형 구성, 애니메이션 요소를 함께 반영했습니다.
+          </p>
+          <a href="#top" class="btn btn-primary" onclick="window.scrollTo({top:0, behavior:'smooth'}); return false;">맨 위로 이동</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      © 2026 STAR WARS ARCHIVE | AI 협의체 Vibe Coding 과제 샘플
+    </footer>
+  </div>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+  </script>
+</body>
+</html>
