@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STAR WARS BATTLE | 벨트스크롤 액션</title>
+  <style>
+    :root{
+      --bg1:#05070d;
+      --bg2:#0d1424;
+      --panel:rgba(255,255,255,0.08);
+      --panel-border:rgba(255,255,255,0.12);
+      --yellow:#ffe81f;
+      --text:#eef4ff;
+      --muted:#a8b6d3;
+      --red:#ff5d73;
+      --blue:#66b6ff;
+      --green:#5cff8d;
+    }
+
+    * { box-sizing: border-box; }
+    body{
+      margin:0;
+      font-family:"Segoe UI","Malgun Gothic",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(255,232,31,.08), transparent 18%),
+        radial-gradient(circle at 85% 15%, rgba(102,182,255,.08), transparent 18%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow:hidden;
+    }
+
+    .stars, .stars::before, .stars::after{
+      position:fixed;
+      inset:0;
+      content:"";
+      pointer-events:none;
+    }
+    .stars{
+      background-image:
+        radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,.9) 50%, transparent 52%),
+        radial-gradient(2px 2px at 25% 65%, rgba(255,255,255,.7) 50%, transparent 52%),
+        radial-gradient(2px 2px at 55% 30%, rgba(255,255,255,.75) 50%, transparent 52%),
+        radial-gradient(2px 2px at 75% 75%, rgba(255,255,255,.75) 50%, transparent 52%),
+        radial-gradient(2px 2px at 88% 18%, rgba(255,255,255,.85) 50%, transparent 52%);
+      opacity:.8;
+    }
+
+    #uiTop{
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:20;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding:14px 18px;
+      background:linear-gradient(to bottom, rgba(2,4,10,.9), rgba(2,4,10,.25));
+      border-bottom:1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(8px);
+    }
+
+    .hudGroup{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .badge{
+      background:var(--panel);
+      border:1px solid var(--panel-border);
+      border-radius:999px;
+      padding:8px 14px;
+      font-size:14px;
+    }
+
+    .lifeWrap{
+      width:220px;
+      height:14px;
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.15);
+      background:rgba(255,255,255,.08);
+    }
+
+    .lifeBar{
+      width:100%;
+      height:100%;
+      background:linear-gradient(90deg, #6cff8f, #c4ff4d);
+      transition:width .2s ease;
+    }
+
+    .bossLifeBar{
+      background:linear-gradient(90deg, #ff7b8a, #ff4141);
+    }
+
+    button{
+      border:none;
+      border-radius:12px;
+      padding:10px 14px;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .btn-yellow{
+      background:var(--yellow);
+      color:#111;
+    }
+
+    .btn-dark{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
+      color:#fff;
+    }
+
+    #gameWrapper{
+      position:relative;
+      width:100vw;
+      height:100vh;
+      overflow:hidden;
+    }
+
+    #world{
+      position:absolute;
+      inset:0;
+    }
+
+    .ground{
+      position:absolute;
+      left:0; right:0; bottom:0;
+      height:160px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)),
+        linear-gradient(180deg, #182438, #0f1726);
+      border-top:2px solid rgba(255,232,31,.18);
+    }
+
+    .ground::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          rgba(255,255,255,.04) 0 2px,
+          transparent 2px 80px
+        );
+      opacity:.35;
+    }
+
+    .panel{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%, -50%);
+      width:min(920px, 92vw);
+      background:rgba(7,11,20,.92);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:26px;
+      box-shadow:0 30px 80px rgba(0,0,0,.5);
+      padding:28px;
+      z-index:30;
+    }
+
+    .hidden{ display:none !important; }
+
+    .panel h1, .panel h2{
+      margin:0 0 14px;
+      text-align:center;
+    }
+
+    .panel h1{
+      font-size:42px;
+      color:var(--yellow);
+      letter-spacing:1px;
+    }
+
+    .panel p{
+      text-align:center;
+      color:var(--muted);
+      line-height:1.7;
+      margin:0 auto 20px;
+      max-width:760px;
+    }
+
+    .characterGrid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+      margin-top:22px;
+    }
+
+    .characterCard{
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:22px;
+      padding:20px;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+
+    .characterCard:hover,
+    .characterCard.selected{
+      transform:translateY(-4px);
+      border-color:rgba(255,232,31,.35);
+      box-shadow:0 14px 36px rgba(0,0,0,.35);
+    }
+
+    .avatar{
+      width:100%;
+      height:160px;
+      border-radius:18px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:72px;
+      margin-bottom:16px;
+      background:linear-gradient(135deg, rgba(255,232,31,.12), rgba(102,182,255,.08));
+      border:1px solid rgba(255,255,255,.1);
+    }
+
+    .characterCard h3{
+      margin:0 0 8px;
+      color:#fff;
+      text-align:center;
+    }
+
+    .characterCard ul{
+      margin:10px 0 0 18px;
+      color:var(--muted);
+      line-height:1.6;
+      font-size:14px;
+    }
+
+    .centerBtns{
+      margin-top:22px;
+      display:flex;
+      justify-content:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .tipBox{
+      margin-top:18px;
+      text-align:center;
+      color:#dfe7f7;
+      font-size:14px;
+    }
+
+    .entity{
+      position:absolute;
+      user-select:none;
+      transform-origin:center;
+    }
+
+    .fighter{
+      width:88px;
+      height:132px;
+      border-radius:18px 18px 14px 14px;
+      overflow:visible;
+    }
+
+    .fighter .body{
+      position:absolute;
+      left:0; right:0; top:0; bottom:0;
+      border-radius:18px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      font-weight:800;
+      text-shadow:0 2px 6px rgba(0,0,0,.45);
+      border:2px solid rgba(255,255,255,.14);
+      box-shadow:0 12px 24px rgba(0,0,0,.28);
+    }
+
+    .fighter .name{
+      font-size:15px;
+      margin-top:8px;
+    }
+
+    .fighter .saber{
+      position:absolute;
+      width:8px;
+      height:62px;
+      border-radius:999px;
+      right:-6px;
+      top:28px;
+      box-shadow:0 0 18px currentColor;
+      opacity:.95;
+    }
+
+    .fighter.attack .saber{
+      transform:translateX(20px) rotate(-28deg);
+    }
+
+    .fighter.hit{
+      filter:brightness(1.5);
+    }
+
+    .enemy .body{
+      background:linear-gradient(180deg, #4a1821, #1f0e14);
+    }
+
+    .boss .body{
+      background:linear-gradient(180deg, #5c0f17, #20060a);
+      border-color:rgba(255,90,90,.45);
+    }
+
+    .player.luke .body{
+      background:linear-gradient(180deg, #6c8cff, #22356f);
+    }
+
+    .player.vader .body{
+      background:linear-gradient(180deg, #5f6775, #1d2129);
+    }
+
+    .player.rey .body{
+      background:linear-gradient(180deg, #c7b08f, #7a674f);
+    }
+
+    .shadow{
+      position:absolute;
+      left:50%;
+      bottom:-8px;
+      transform:translateX(-50%);
+      width:72px;
+      height:14px;
+      border-radius:50%;
+      background:rgba(0,0,0,.35);
+      filter:blur(2px);
+    }
+
+    .effect{
+      position:absolute;
+      font-weight:900;
+      pointer-events:none;
+      text-shadow:0 0 12px rgba(255,255,255,.3);
+      animation:floatUp .5s ease forwards;
+    }
+
+    @keyframes floatUp{
+      from{ opacity:1; transform:translateY(0) scale(1); }
+      to{ opacity:0; transform:translateY(-34px) scale(1.1); }
+    }
+
+    .waveBanner{
+      position:absolute;
+      top:90px;
+      left:50%;
+      transform:translateX(-50%);
+      z-index:10;
+      font-size:34px;
+      font-weight:900;
+      color:var(--yellow);
+      text-shadow:0 0 18px rgba(255,232,31,.3);
+      opacity:0;
+      transition:.3s ease;
+      pointer-events:none;
+    }
+
+    .waveBanner.show{
+      opacity:1;
+      top:110px;
+    }
+
+    .controlsBox{
+      position:absolute;
+      right:20px;
+      bottom:20px;
+      z-index:15;
+      background:rgba(7,11,20,.7);
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:18px;
+      padding:14px 16px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.7;
+      max-width:260px;
+    }
+
+    @media (max-width: 900px){
+      .characterGrid{ grid-template-columns:1fr; }
+      .controlsBox{ left:20px; right:20px; max-width:none; }
+      #uiTop{ padding:12px; }
+      .badge{ font-size:12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+
+  <div id="uiTop">
+    <div class="hudGroup">
+      <div class="badge">캐릭터: <span id="selectedName">미선택</span></div>
+      <div class="badge">점수: <span id="score">0</span></div>
+      <div class="badge">웨이브: <span id="waveText">0</span></div>
+    </div>
+
+    <div class="hudGroup">
+      <div class="badge">HP</div>
+      <div class="lifeWrap"><div id="playerHpBar" class="lifeBar"></div></div>
+
+      <div class="badge">보스</div>
+      <div class="lifeWrap"><div id="bossHpBar" class="lifeBar bossLifeBar" style="width:0%"></div></div>
+
+      <button class="btn-dark" onclick="togglePause()">일시정지</button>
+      <button class="btn-yellow" onclick="location.reload()">다시 시작</button>
+    </div>
+  </div>
+
+  <div id="gameWrapper">
+    <div id="world"></div>
+    <div class="ground"></div>
+    <div id="waveBanner" class="waveBanner">WAVE 1</div>
+
+    <div class="controlsBox">
+      <strong style="color:#fff;">조작 방법</strong><br>
+      이동: ← → 또는 A / D<br>
+      점프: ↑ / W / Space<br>
+      공격: J 또는 Enter<br>
+      목표: 적을 모두 쓰러뜨리고 마지막 보스를 처치
+    </div>
+
+    <div id="startPanel" class="panel">
+      <h1>STAR WARS BATTLE</h1>
+      <p>
+        스타워즈 등장인물 1명을 선택해 적들을 물리치는 벨트스크롤 액션입니다.
+        캐릭터마다 체력, 공격력, 속도가 조금씩 다릅니다.
+      </p>
+
+      <div class="characterGrid">
+        <div class="characterCard" data-char="luke">
+          <div class="avatar">🟦</div>
+          <h3>루크 스카이워커</h3>
+          <ul>
+            <li>균형형 캐릭터</li>
+            <li>적당한 체력과 속도</li>
+            <li>처음 하기 가장 무난</li>
+          </ul>
+        </div>
+
+        <div class="characterCard" data-char="vader">
+          <div class="avatar">🟥</div>
+          <h3>다스 베이더</h3>
+          <ul>
+            <li>강한 공격력</li>
+            <li>이동 속도는 느림</li>
+            <li>보스전에 강함</li>
+          </ul>
+        </div>
+
+        <div class="characterCard" data-char="rey">
+          <div class="avatar">🟨</div>
+          <h3>레이</h3>
+          <ul>
+            <li>빠른 이동 속도</li>
+            <li>연속 전투에 유리</li>
+            <li>기동성이 좋음</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="centerBtns">
+        <button class="btn-yellow" onclick="startGame()">게임 시작</button>
+        <button class="btn-dark" onclick="window.close()">창 닫기</button>
+      </div>
+
+      <div class="tipBox">
+        팝업창 제출용으로 설계했습니다. 시작 후 적 웨이브를 모두 정리하면 보스가 등장합니다.
+      </div>
+    </div>
+
+    <div id="gameOverPanel" class="panel hidden">
+      <h2 id="gameOverTitle">GAME OVER</h2>
+      <p id="gameOverDesc">결과</p>
+      <div class="centerBtns">
+        <button class="btn-yellow" onclick="location.reload()">다시 플레이</button>
+        <button class="btn-dark" onclick="window.close()">창 닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const world = document.getElementById('world');
+    const scoreEl = document.getElementById('score');
+    const waveTextEl = document.getElementById('waveText');
+    const selectedNameEl = document.getElementById('selectedName');
+    const playerHpBar = document.getElementById('playerHpBar');
+    const bossHpBar = document.getElementById('bossHpBar');
+    const startPanel = document.getElementById('startPanel');
+    const gameOverPanel = document.getElementById('gameOverPanel');
+    const gameOverTitle = document.getElementById('gameOverTitle');
+    const gameOverDesc = document.getElementById('gameOverDesc');
+    const waveBanner = document.getElementById('waveBanner');
+
+    let selectedChar = null;
+    let running = false;
+    let paused = false;
+    let score = 0;
+    let wave = 0;
+    let keys = {};
+    let player = null;
+    let enemies = [];
+    let effects = [];
+    let bossSpawned = false;
+    let animationId = null;
+    let lastTime = 0;
+    const groundY = window.innerHeight - 160;
+
+    const charInfo = {
+      luke: { name: '루크', hp: 120, maxHp: 120, atk: 16, speed: 5.0, jump: 16, color: '#66b6ff', saber: '#4dd8ff' },
+      vader:{ name: '베이더', hp: 145, maxHp: 145, atk: 22, speed: 4.0, jump: 15, color: '#ff6464', saber: '#ff3f3f' },
+      rey:  { name: '레이', hp: 110, maxHp: 110, atk: 14, speed: 5.8, jump: 17, color: '#ffe07a', saber: '#ffe55d' }
+    };
+
+    document.querySelectorAll('.characterCard').forEach(card => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.characterCard').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        selectedChar = card.dataset.char;
+        selectedNameEl.textContent = charInfo[selectedChar].name;
+      });
+    });
+
+    function createFighterElement(label, color, saberColor, extraClass=''){
+      const el = document.createElement('div');
+      el.className = `entity fighter ${extraClass}`;
+      el.innerHTML = `
+        <div class="body" style="background:linear-gradient(180deg, ${shade(color, 18)}, ${shade(color, -28)});">
+          <div style="font-size:36px;">⚔️</div>
+          <div class="name">${label}</div>
+        </div>
+        <div class="saber" style="background:${saberColor}; color:${saberColor};"></div>
+        <div class="shadow"></div>
+      `;
+      world.appendChild(el);
+      return el;
+    }
+
+    function shade(hex, amt) {
+      const c = hex.replace('#','');
+      let r = parseInt(c.substring(0,2),16);
+      let g = parseInt(c.substring(2,4),16);
+      let b = parseInt(c.substring(4,6),16);
+      r = Math.max(0, Math.min(255, r + amt));
+      g = Math.max(0, Math.min(255, g + amt));
+      b = Math.max(0, Math.min(255, b + amt));
+      return `rgb(${r},${g},${b})`;
+    }
+
+    function startGame(){
+      if(!selectedChar){
+        alert('캐릭터를 먼저 선택하세요.');
+        return;
+      }
+
+      startPanel.classList.add('hidden');
+      initPlayer();
+      running = true;
+      spawnNextWave();
+      requestAnimationFrame(gameLoop);
+    }
+
+    function initPlayer(){
+      const info = charInfo[selectedChar];
+      const el = createFighterElement(info.name, info.color, info.saber, `player ${selectedChar}`);
+
+      player = {
+        type:'player',
+        name: info.name,
+        x: 120,
+        y: groundY - 132,
+        w: 88,
+        h: 132,
+        vx: 0,
+        vy: 0,
+        hp: info.hp,
+        maxHp: info.maxHp,
+        atk: info.atk,
+        speed: info.speed,
+        jump: info.jump,
+        el,
+        isGrounded: true,
+        attacking: false,
+        attackCooldown: 0,
+        hitCooldown: 0,
+        facing: 1
+      };
+      updatePlayerUI();
+      renderEntity(player);
+    }
+
+    function spawnEnemy(isBoss=false){
+      const spawnRight = Math.random() > 0.5;
+      const x = spawnRight ? window.innerWidth + 40 : -100;
+      const color = isBoss ? '#ff5b5b' : '#d86b7a';
+      const saber = isBoss ? '#ff3f3f' : '#ff7b9a';
+      const label = isBoss ? '보스' : '적군';
+      const el = createFighterElement(label, color, saber, isBoss ? 'enemy boss' : 'enemy');
+
+      const enemy = {
+        type:'enemy',
+        isBoss,
+        x,
+        y: groundY - 132,
+        w: isBoss ? 98 : 88,
+        h: 132,
+        vx: 0,
+        vy: 0,
+        hp: isBoss ? 220 : 52,
+        maxHp: isBoss ? 220 : 52,
+        atk: isBoss ? 14 : 8,
+        speed: isBoss ? 2.2 : (1.5 + Math.random() * 1.2),
+        el,
+        attacking: false,
+        attackCooldown: Math.random() * 20,
+        hitCooldown: 0,
+        facing: spawnRight ? -1 : 1
+      };
+      enemies.push(enemy);
+      renderEntity(enemy);
+      updateBossUI();
+    }
+
+    function spawnNextWave(){
+      wave++;
+      waveTextEl.textContent = wave;
+      showWaveBanner(wave <= 3 ? `WAVE ${wave}` : 'BOSS');
+
+      if(wave <= 3){
+        const count = 3 + wave;
+        for(let i=0;i<count;i++){
+          setTimeout(() => spawnEnemy(false), i * 500);
+        }
+      } else if(!bossSpawned){
+        bossSpawned = true;
+        setTimeout(() => spawnEnemy(true), 700);
+      }
+    }
+
+    function showWaveBanner(text){
+      waveBanner.textContent = text;
+      waveBanner.classList.add('show');
+      setTimeout(() => waveBanner.classList.remove('show'), 1400);
+    }
+
+    function togglePause(){
+      if(!running) return;
+      paused = !paused;
+      if(!paused){
+        lastTime = 0;
+        requestAnimationFrame(gameLoop);
+      }
+    }
+
+    function gameLoop(ts){
+      if(!running || paused) return;
+
+      if(!lastTime) lastTime = ts;
+      const dt = Math.min(1.4, (ts - lastTime) / 16.67);
+      lastTime = ts;
+
+      updatePlayer(dt);
+      updateEnemies(dt);
+      updateEffects(dt);
+      checkWaveClear();
+      checkGameState();
+
+      animationId = requestAnimationFrame(gameLoop);
+    }
+
+    function updatePlayer(dt){
+      if(player.attackCooldown > 0) player.attackCooldown -= dt;
+      if(player.hitCooldown > 0) player.hitCooldown -= dt;
+
+      player.vx = 0;
+      if(keys['ArrowLeft'] || keys['a'] || keys['A']) {
+        player.vx = -player.speed * dt * 5;
+        player.facing = -1;
+      }
+      if(keys['ArrowRight'] || keys['d'] || keys['D']) {
+        player.vx = player.speed * dt * 5;
+        player.facing = 1;
+      }
+
+      player.x += player.vx;
+      player.x = Math.max(20, Math.min(window.innerWidth - player.w - 20, player.x));
+
+      if(!player.isGrounded){
+        player.vy += 0.9 * dt;
+      }
+
+      player.y += player.vy * dt;
+      if(player.y >= groundY - player.h){
+        player.y = groundY - player.h;
+        player.vy = 0;
+        player.isGrounded = true;
+      }
+
+      renderEntity(player);
+    }
+
+    function updateEnemies(dt){
+      enemies.forEach(enemy => {
+        if(enemy.hitCooldown > 0) enemy.hitCooldown -= dt;
+        if(enemy.attackCooldown > 0) enemy.attackCooldown -= dt;
+
+        const dist = player.x - enemy.x;
+        enemy.facing = dist >= 0 ? 1 : -1;
+
+        const absDist = Math.abs(dist);
+
+        if(absDist > 72){
+          enemy.x += Math.sign(dist) * enemy.speed * dt * 3.4;
+        } else {
+          if(enemy.attackCooldown <= 0){
+            enemyAttack(enemy);
+            enemy.attackCooldown = enemy.isBoss ? 26 : 38;
+          }
+        }
+
+        enemy.x = Math.max(0, Math.min(window.innerWidth - enemy.w, enemy.x));
+        renderEntity(enemy);
+      });
+    }
+
+    function updateEffects(){
+      effects = effects.filter(e => {
+        if(performance.now() > e.removeAt){
+          e.el.remove();
+          return false;
+        }
+        return true;
+      });
+    }
+
+    function attack(){
+      if(!running || !player || player.attackCooldown > 0) return;
+
+      player.attackCooldown = 18;
+      player.attacking = true;
+      player.el.classList.add('attack');
+
+      const attackRange = 110;
+      const attackBoxX = player.facing === 1 ? player.x + player.w - 10 : player.x - attackRange + 10;
+      const attackBoxW = attackRange;
+
+      enemies.forEach(enemy => {
+        if(enemy.hp <= 0) return;
+        if(
+          rectsOverlap(
+            attackBoxX, player.y + 14, attackBoxW, player.h - 20,
+            enemy.x, enemy.y, enemy.w, enemy.h
+          )
+        ){
+          damageEnemy(enemy, player.atk);
+        }
+      });
+
+      setTimeout(() => {
+        player.attacking = false;
+        player.el.classList.remove('attack');
+      }, 160);
+    }
+
+    function enemyAttack(enemy){
+      if(player.hitCooldown > 0) return;
+      if(rectsOverlap(enemy.x, enemy.y, enemy.w, enemy.h, player.x, player.y, player.w, player.h)){
+        damagePlayer(enemy.atk);
+      }
+    }
+
+    function damageEnemy(enemy, dmg){
+      if(enemy.hitCooldown > 0) return;
+      enemy.hp -= dmg;
+      enemy.hitCooldown = 10;
+      enemy.el.classList.add('hit');
+      spawnEffect(`-${dmg}`, enemy.x + enemy.w/2, enemy.y, '#ffe81f');
+
+      setTimeout(() => enemy.el.classList.remove('hit'), 120);
+
+      if(enemy.hp <= 0){
+        score += enemy.isBoss ? 1000 : 120;
+        scoreEl.textContent = score;
+        enemy.el.remove();
+        enemies = enemies.filter(e => e !== enemy);
+        updateBossUI();
+      }
+    }
+
+    function damagePlayer(dmg){
+      if(player.hitCooldown > 0) return;
+      player.hp -= dmg;
+      player.hitCooldown = 16;
+      player.el.classList.add('hit');
+      spawnEffect(`-${dmg}`, player.x + player.w/2, player.y, '#ff7b8a');
+      updatePlayerUI();
+      setTimeout(() => player.el.classList.remove('hit'), 120);
+    }
+
+    function spawnEffect(text, x, y, color){
+      const el = document.createElement('div');
+      el.className = 'effect';
+      el.textContent = text;
+      el.style.left = `${x}px`;
+      el.style.top = `${y}px`;
+      el.style.color = color;
+      world.appendChild(el);
+      effects.push({ el, removeAt: performance.now() + 520 });
+    }
+
+    function rectsOverlap(x1,y1,w1,h1,x2,y2,w2,h2){
+      return x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2;
+    }
+
+    function renderEntity(obj){
+      obj.el.style.left = `${obj.x}px`;
+      obj.el.style.top = `${obj.y}px`;
+      obj.el.style.transform = `scaleX(${obj.facing})`;
+    }
+
+    function updatePlayerUI(){
+      const percent = Math.max(0, (player.hp / player.maxHp) * 100);
+      playerHpBar.style.width = `${percent}%`;
+    }
+
+    function updateBossUI(){
+      const boss = enemies.find(e => e.isBoss);
+      if(!boss){
+        bossHpBar.style.width = '0%';
+        return;
+      }
+      const percent = Math.max(0, (boss.hp / boss.maxHp) * 100);
+      bossHpBar.style.width = `${percent}%`;
+    }
+
+    function checkWaveClear(){
+      if(!running) return;
+
+      if(enemies.length === 0){
+        if(wave < 3){
+          spawnNextWave();
+        } else if(wave === 3 && !bossSpawned){
+          spawnNextWave();
+        }
+      }
+    }
+
+    function checkGameState(){
+      if(player.hp <= 0){
+        endGame(false);
+        return;
+      }
+
+      if(bossSpawned && enemies.length === 0 && wave >= 4){
+        endGame(true);
+      }
+    }
+
+    function endGame(win){
+      running = false;
+      cancelAnimationFrame(animationId);
+
+      gameOverPanel.classList.remove('hidden');
+      if(win){
+        gameOverTitle.textContent = 'VICTORY';
+        gameOverDesc.textContent = `축하합니다. ${charInfo[selectedChar].name}(으)로 적과 보스를 모두 물리쳤습니다. 최종 점수: ${score}`;
+      } else {
+        gameOverTitle.textContent = 'GAME OVER';
+        gameOverDesc.textContent = `아쉽게 패배했습니다. 최종 점수: ${score}`;
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      keys[e.key] = true;
+
+      if(['ArrowUp', 'w', 'W', ' '].includes(e.key) && running && player && player.isGrounded){
+        player.vy = -player.jump;
+        player.isGrounded = false;
+      }
+
+      if(['j', 'J', 'Enter'].includes(e.key)){
+        attack();
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      keys[e.key] = false;
+    });
+
+    window.addEventListener('resize', () => {
+      if(player){
+        player.y = Math.min(player.y, window.innerHeight - 160 - player.h);
+      }
+      enemies.forEach(enemy => {
+        enemy.y = Math.min(enemy.y, window.innerHeight - 160 - enemy.h);
+      });
+    });
+  </script>
+</body>
+</html>
