@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>STAR WARS ARCHIVE | 스타워즈 시리즈 소개</title>
-  <meta name="description" content="스타워즈 영화 시리즈를 한눈에 소개하는 세련된 랜딩페이지" />
+  <meta name="description" content="스타워즈 영화 시리즈를 소개하는 세련된 랜딩페이지" />
   <style>
     :root {
       --bg: #05070d;
@@ -80,6 +80,11 @@
       text-decoration: none;
     }
 
+    img {
+      display: block;
+      width: 100%;
+    }
+
     .wrap {
       position: relative;
       z-index: 1;
@@ -88,7 +93,7 @@
     header {
       position: sticky;
       top: 0;
-      z-index: 20;
+      z-index: 30;
       backdrop-filter: blur(14px);
       background: rgba(4, 8, 16, 0.66);
       border-bottom: 1px solid rgba(255,255,255,0.06);
@@ -123,6 +128,14 @@
       text-transform: uppercase;
     }
 
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
     .menu {
       display: flex;
       gap: 18px;
@@ -151,6 +164,23 @@
       width: 100%;
     }
 
+    .music-toggle {
+      border: 1px solid rgba(255, 232, 31, 0.25);
+      background: rgba(255, 232, 31, 0.08);
+      color: var(--yellow);
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      transition: .25s ease;
+    }
+
+    .music-toggle:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 232, 31, 0.14);
+    }
+
     .hero {
       min-height: 100vh;
       display: grid;
@@ -177,7 +207,7 @@
       max-width: 1120px;
       width: 100%;
       display: grid;
-      grid-template-columns: 1.15fr .85fr;
+      grid-template-columns: 1.1fr .9fr;
       gap: 28px;
       align-items: center;
     }
@@ -263,60 +293,43 @@
       color: var(--yellow);
     }
 
-    .hero-card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 28px;
-      padding: 26px;
-      box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
+    .hero-visual {
       animation: fadeUp 1.1s ease both;
     }
 
-    .hero-card::before {
-      content: "";
-      position: absolute;
-      inset: -1px;
-      background: linear-gradient(135deg, rgba(255,232,31,.18), transparent 30%, transparent 70%, rgba(113,183,255,.15));
-      z-index: 0;
-      opacity: .9;
-    }
-
-    .hero-card-inner {
+    .hero-image-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
       position: relative;
-      z-index: 1;
     }
 
-    .hero-card h2 {
-      margin: 0 0 16px;
+    .hero-image {
+      height: 100%;
+      min-height: 520px;
+      object-fit: cover;
+      opacity: 0.92;
+    }
+
+    .hero-image-overlay {
+      position: absolute;
+      inset: auto 0 0 0;
+      padding: 28px;
+      background: linear-gradient(to top, rgba(3,5,10,0.95), rgba(3,5,10,0.12));
+    }
+
+    .hero-image-overlay h2 {
+      margin: 0 0 8px;
       color: var(--yellow);
-      font-size: 22px;
+      font-size: 24px;
     }
 
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-    }
-
-    .stat {
-      background: rgba(0,0,0,0.22);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px;
-      padding: 18px;
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 28px;
-      margin-bottom: 6px;
-      color: #fff;
-    }
-
-    .stat span {
-      color: var(--muted);
-      font-size: 13px;
+    .hero-image-overlay p {
+      margin: 0;
+      color: #d8e1ef;
+      line-height: 1.7;
     }
 
     section {
@@ -457,12 +470,54 @@
       font-size: 13px;
     }
 
-    .character-card .role {
+    .character-photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .character-card {
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .character-photo {
+      height: 340px;
+      object-fit: cover;
+    }
+
+    .character-content {
+      padding: 22px;
+    }
+
+    .character-role {
       color: var(--yellow);
       font-size: 13px;
       font-weight: 700;
       margin-bottom: 10px;
       letter-spacing: .5px;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .gallery-card {
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .gallery-image {
+      height: 260px;
+      object-fit: cover;
+    }
+
+    .gallery-caption {
+      padding: 18px 20px 22px;
+      color: #d2dced;
+      line-height: 1.7;
     }
 
     .timeline {
@@ -581,12 +636,10 @@
 
     @media (max-width: 1024px) {
       .hero-panel,
-      .grid-3 {
+      .grid-3,
+      .character-photo-grid,
+      .gallery-grid {
         grid-template-columns: 1fr 1fr;
-      }
-
-      .hero-panel {
-        align-items: stretch;
       }
     }
 
@@ -594,6 +647,12 @@
       .nav {
         flex-direction: column;
         align-items: flex-start;
+      }
+
+      .nav-right {
+        width: 100%;
+        align-items: flex-start;
+        justify-content: flex-start;
       }
 
       .menu {
@@ -607,8 +666,9 @@
 
       .hero-panel,
       .grid-3,
-      .stats,
-      .timeline-item {
+      .timeline-item,
+      .character-photo-grid,
+      .gallery-grid {
         grid-template-columns: 1fr;
       }
 
@@ -619,20 +679,29 @@
       .timeline-badge {
         min-height: 88px;
       }
+
+      .hero-image {
+        min-height: 360px;
+      }
     }
 
     @media (max-width: 540px) {
-      .hero h1 {
-        letter-spacing: -0.5px;
-      }
-
       .btn {
         width: 100%;
+      }
+
+      .character-photo,
+      .gallery-image {
+        height: 260px;
       }
     }
   </style>
 </head>
-<body>
+<body id="top">
+  <audio id="bgMusic" loop>
+    <source src="audio/starwars-theme.mp3" type="audio/mpeg" />
+  </audio>
+
   <div class="wrap">
     <header>
       <div class="nav">
@@ -640,13 +709,17 @@
           <strong>STAR WARS</strong>
           <span>Cinematic Archive</span>
         </div>
-        <nav class="menu">
-          <a href="#intro">소개</a>
-          <a href="#episodes">에피소드</a>
-          <a href="#characters">주요 인물</a>
-          <a href="#timeline">흐름</a>
-          <a href="#ending">마무리</a>
-        </nav>
+
+        <div class="nav-right">
+          <nav class="menu">
+            <a href="#intro">소개</a>
+            <a href="#episodes">에피소드</a>
+            <a href="#characters">인물</a>
+            <a href="#gallery">이미지</a>
+            <a href="#timeline">흐름</a>
+          </nav>
+          <button class="music-toggle" id="musicToggle">🔊 음악 끄기</button>
+        </div>
       </div>
     </header>
 
@@ -662,34 +735,23 @@
             <p>
               스타워즈는 단순한 SF 영화가 아니라 세대를 이어 사랑받아 온 거대한 우주 서사입니다.
               제다이와 시스, 공화국과 제국, 그리고 스카이워커 가문을 중심으로 펼쳐지는 장대한 이야기를
-              세련된 한 페이지로 정리했습니다.
+              한 페이지 안에 세련되게 담았습니다.
             </p>
             <div class="hero-actions">
               <a href="#episodes" class="btn btn-primary">시리즈 탐험하기</a>
-              <a href="#characters" class="btn btn-secondary">주요 인물 보기</a>
+              <a href="#gallery" class="btn btn-secondary">이미지 보기</a>
             </div>
           </div>
 
-          <div class="hero-card">
-            <div class="hero-card-inner">
-              <h2>Galaxy Overview</h2>
-              <div class="stats">
-                <div class="stat">
-                  <strong>9</strong>
-                  <span>메인 에피소드</span>
-                </div>
-                <div class="stat">
-                  <strong>3</strong>
-                  <span>주요 삼부작 구조</span>
-                </div>
-                <div class="stat">
-                  <strong>JEDI</strong>
-                  <span>희망과 수련의 상징</span>
-                </div>
-                <div class="stat">
-                  <strong>SITH</strong>
-                  <span>어둠과 권력의 상징</span>
-                </div>
+          <div class="hero-visual">
+            <div class="hero-image-card">
+              <img src="images/hero-starwars.jpg" alt="스타워즈 메인 이미지" class="hero-image" />
+              <div class="hero-image-overlay">
+                <h2>Galaxy Overview</h2>
+                <p>
+                  광대한 우주, 제다이와 시스의 대립, 세대를 잇는 영웅들의 이야기.
+                  스타워즈는 지금까지도 가장 상징적인 영화 시리즈 중 하나입니다.
+                </p>
               </div>
             </div>
           </div>
@@ -714,7 +776,7 @@
             <h3>거대한 세계관</h3>
             <p>
               먼 은하계를 배경으로 제다이 기사단, 시스 군주, 은하 공화국, 제국, 반란군과 저항군이
-              끊임없이 충돌합니다. 설정이 방대하면서도 핵심 축이 분명해 몰입도가 높습니다.
+              끊임없이 충돌합니다.
             </p>
           </article>
           <article class="card">
@@ -727,8 +789,7 @@
           <article class="card">
             <h3>세대를 잇는 이야기</h3>
             <p>
-              아나킨에서 루크로, 다시 새로운 세대로 이어지는 흐름은 스타워즈를 한 편의 영화가 아니라
-              장대한 전설처럼 느끼게 만듭니다.
+              아나킨에서 루크로, 다시 새로운 세대로 이어지는 흐름은 스타워즈를 거대한 전설처럼 느끼게 합니다.
             </p>
           </article>
         </div>
@@ -742,7 +803,6 @@
           </div>
           <p>
             스타워즈의 메인 사가는 총 9개의 에피소드로 구성되며, 크게 프리퀄, 오리지널, 시퀄 삼부작으로 나뉩니다.
-            각 작품은 독립적인 매력을 갖고 있으면서도 하나의 거대한 흐름으로 연결됩니다.
           </p>
         </div>
 
@@ -753,9 +813,7 @@
               <span class="episode-era">Prequel</span>
             </div>
             <h3>보이지 않는 위험</h3>
-            <p>
-              어린 아나킨 스카이워커가 등장하며, 공화국의 불안과 제다이 기사단의 움직임이 본격적으로 드러납니다.
-            </p>
+            <p>어린 아나킨 스카이워커가 등장하며 공화국의 불안이 드러납니다.</p>
             <div class="episode-meta">프리퀄의 시작점</div>
           </article>
 
@@ -765,10 +823,8 @@
               <span class="episode-era">Prequel</span>
             </div>
             <h3>클론의 습격</h3>
-            <p>
-              은하계의 정치적 긴장이 높아지고, 아나킨과 파드메의 관계가 전개되며 전쟁의 그림자가 짙어집니다.
-            </p>
-            <div class="episode-meta">클론 전쟁의 서막</div>
+            <p>은하계의 정치적 긴장이 높아지고 클론 전쟁의 서막이 열립니다.</p>
+            <div class="episode-meta">전쟁의 시작</div>
           </article>
 
           <article class="card episode-card">
@@ -777,10 +833,8 @@
               <span class="episode-era">Prequel</span>
             </div>
             <h3>시스의 복수</h3>
-            <p>
-              아나킨이 다스 베이더로 변해가는 비극이 펼쳐지며, 공화국은 무너지고 제국이 탄생합니다.
-            </p>
-            <div class="episode-meta">몰락과 탄생의 전환점</div>
+            <p>아나킨이 다스 베이더로 변해가는 비극과 제국의 탄생이 그려집니다.</p>
+            <div class="episode-meta">몰락과 전환</div>
           </article>
 
           <article class="card episode-card">
@@ -789,9 +843,7 @@
               <span class="episode-era">Original</span>
             </div>
             <h3>새로운 희망</h3>
-            <p>
-              루크 스카이워커의 모험이 시작되며, 스타워즈의 상징적인 영웅 서사가 본격적으로 펼쳐집니다.
-            </p>
+            <p>루크 스카이워커의 모험이 시작되며 전설적인 영웅 서사가 펼쳐집니다.</p>
             <div class="episode-meta">전설의 출발점</div>
           </article>
 
@@ -801,10 +853,8 @@
               <span class="episode-era">Original</span>
             </div>
             <h3>제국의 역습</h3>
-            <p>
-              시리즈 전체에서 가장 인상적인 반전과 함께 루크와 다스 베이더의 갈등이 더욱 깊어집니다.
-            </p>
-            <div class="episode-meta">가장 강렬한 긴장감</div>
+            <p>시리즈 전체에서 가장 강렬한 긴장감과 상징적인 반전이 등장합니다.</p>
+            <div class="episode-meta">가장 강렬한 서사</div>
           </article>
 
           <article class="card episode-card">
@@ -813,10 +863,8 @@
               <span class="episode-era">Original</span>
             </div>
             <h3>제다이의 귀환</h3>
-            <p>
-              루크, 베이더, 황제의 최종 대결을 통해 오리지널 삼부작이 장대한 감정선과 함께 완성됩니다.
-            </p>
-            <div class="episode-meta">희망과 구원의 결말</div>
+            <p>루크, 베이더, 황제의 최종 대결을 통해 오리지널 삼부작이 완성됩니다.</p>
+            <div class="episode-meta">희망과 구원</div>
           </article>
 
           <article class="card episode-card">
@@ -825,10 +873,8 @@
               <span class="episode-era">Sequel</span>
             </div>
             <h3>깨어난 포스</h3>
-            <p>
-              레이, 핀, 카일로 렌 등 새로운 세대가 등장하며 스카이워커 사가가 다시 움직이기 시작합니다.
-            </p>
-            <div class="episode-meta">새로운 세대의 시작</div>
+            <p>레이, 핀, 카일로 렌 등 새로운 세대가 등장하며 이야기가 이어집니다.</p>
+            <div class="episode-meta">새로운 시작</div>
           </article>
 
           <article class="card episode-card">
@@ -837,9 +883,7 @@
               <span class="episode-era">Sequel</span>
             </div>
             <h3>라스트 제다이</h3>
-            <p>
-              레이의 성장, 루크의 고뇌, 저항군의 위기를 통해 전통과 변화 사이의 긴장이 강조됩니다.
-            </p>
+            <p>전통과 변화 사이의 긴장이 강조되며 레이의 성장과 루크의 고뇌가 드러납니다.</p>
             <div class="episode-meta">도전과 재해석</div>
           </article>
 
@@ -849,10 +893,8 @@
               <span class="episode-era">Sequel</span>
             </div>
             <h3>라이즈 오브 스카이워커</h3>
-            <p>
-              여러 세대의 서사가 하나로 수렴되며, 스카이워커 가문의 긴 여정이 대단원의 막을 내립니다.
-            </p>
-            <div class="episode-meta">사가의 최종장</div>
+            <p>여러 세대의 서사가 하나로 수렴되며 스카이워커 사가가 막을 내립니다.</p>
+            <div class="episode-meta">대단원의 마무리</div>
           </article>
         </div>
       </section>
@@ -861,63 +903,69 @@
         <div class="section-head">
           <div>
             <div class="pill">Characters</div>
-            <h2>스타워즈를 빛낸 핵심 인물들</h2>
+            <h2>주요 인물 이미지 소개</h2>
           </div>
           <p>
-            스타워즈의 진짜 힘은 캐릭터에 있습니다. 영웅과 악역이 단순한 구도로 그려지지 않고,
-            선택과 상처, 갈등과 구원이라는 감정선 위에서 입체적으로 살아 움직입니다.
+            인물 사진을 함께 배치하면 홈페이지가 훨씬 풍부하게 보입니다.
+            아래 이미지는 준비하신 사진 파일명에 맞춰 연결해 두었습니다.
           </p>
         </div>
 
-        <div class="grid-3">
+        <div class="character-photo-grid">
           <article class="card character-card">
-            <div class="role">JEDI HERO</div>
-            <h3>루크 스카이워커</h3>
-            <p>
-              평범한 청년에서 은하계의 희망으로 성장하는 대표 인물입니다.
-              스타워즈의 영웅 서사를 가장 상징적으로 보여줍니다.
-            </p>
+            <img src="images/luke.jpg" alt="루크 스카이워커" class="character-photo" />
+            <div class="character-content">
+              <div class="character-role">JEDI HERO</div>
+              <h3>루크 스카이워커</h3>
+              <p>평범한 청년에서 은하계의 희망으로 성장하는 대표 영웅입니다.</p>
+            </div>
           </article>
 
           <article class="card character-card">
-            <div class="role">DARK ICON</div>
-            <h3>다스 베이더</h3>
-            <p>
-              가장 상징적인 악역이자 동시에 가장 비극적인 인물입니다.
-              타락과 구원의 테마를 한 몸에 보여주는 존재입니다.
-            </p>
+            <img src="images/vader.jpg" alt="다스 베이더" class="character-photo" />
+            <div class="character-content">
+              <div class="character-role">DARK ICON</div>
+              <h3>다스 베이더</h3>
+              <p>가장 상징적인 악역이자 동시에 가장 비극적인 인물입니다.</p>
+            </div>
           </article>
 
           <article class="card character-card">
-            <div class="role">LEADER</div>
-            <h3>레이아 오르가나</h3>
-            <p>
-              강인함과 지성을 겸비한 지도자로, 반란군과 저항군의 중심축 역할을 수행합니다.
-            </p>
+            <img src="images/leia.jpg" alt="레이아 오르가나" class="character-photo" />
+            <div class="character-content">
+              <div class="character-role">LEADER</div>
+              <h3>레이아 오르가나</h3>
+              <p>강인함과 지성을 겸비한 지도자로 반란군과 저항군의 중심축입니다.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="gallery" class="reveal">
+        <div class="section-head">
+          <div>
+            <div class="pill">Gallery</div>
+            <h2>관련 이미지 갤러리</h2>
+          </div>
+          <p>
+            포스터나 전투 장면 같은 이미지를 넣으면 블로그형 홈페이지 느낌이 더 살아납니다.
+          </p>
+        </div>
+
+        <div class="gallery-grid">
+          <article class="card gallery-card">
+            <img src="images/poster1.jpg" alt="스타워즈 포스터 이미지 1" class="gallery-image" />
+            <div class="gallery-caption">프리퀄 삼부작의 시작을 상징하는 대표 이미지</div>
           </article>
 
-          <article class="card character-card">
-            <div class="role">SMUGGLER</div>
-            <h3>한 솔로</h3>
-            <p>
-              자유분방한 매력과 인간적인 유머를 지닌 인물로, 스타워즈의 분위기를 더욱 풍성하게 만듭니다.
-            </p>
+          <article class="card gallery-card">
+            <img src="images/poster2.jpg" alt="스타워즈 포스터 이미지 2" class="gallery-image" />
+            <div class="gallery-caption">오리지널 삼부작의 전설적인 분위기를 담은 이미지</div>
           </article>
 
-          <article class="card character-card">
-            <div class="role">MASTER</div>
-            <h3>오비완 케노비</h3>
-            <p>
-              지혜로운 제다이 스승으로, 아나킨과 루크 모두에게 깊은 영향을 남긴 핵심 인물입니다.
-            </p>
-          </article>
-
-          <article class="card character-card">
-            <div class="role">NEW GENERATION</div>
-            <h3>레이</h3>
-            <p>
-              시퀄 시리즈를 이끄는 주인공으로, 자신의 정체성과 운명을 찾아가는 여정이 인상적입니다.
-            </p>
+          <article class="card gallery-card">
+            <img src="images/poster3.jpg" alt="스타워즈 포스터 이미지 3" class="gallery-image" />
+            <div class="gallery-caption">새로운 세대의 스토리를 보여주는 시퀄 대표 이미지</div>
           </article>
         </div>
       </section>
@@ -929,8 +977,7 @@
             <h2>세 개의 삼부작으로 이해하는 스타워즈</h2>
           </div>
           <p>
-            처음 접하는 사람도 아래 구조로 보면 전체 흐름을 쉽게 이해할 수 있습니다.
-            스타워즈의 매력은 각 삼부작이 서로 다른 시대와 감성을 보여주면서도 하나의 전설로 이어진다는 점입니다.
+            아래 구조로 보면 스타워즈의 전체 흐름을 쉽게 이해할 수 있습니다.
           </p>
         </div>
 
@@ -939,10 +986,7 @@
             <div class="timeline-badge">TRILOGY I<br />EP I - III</div>
             <div class="timeline-content">
               <h3>프리퀄 삼부작</h3>
-              <p>
-                아나킨 스카이워커의 성장과 몰락, 그리고 공화국의 붕괴를 다룹니다.
-                이상이 어떻게 권력과 공포에 의해 무너질 수 있는지를 보여주는 비극적 서사입니다.
-              </p>
+              <p>아나킨 스카이워커의 성장과 몰락, 그리고 공화국의 붕괴를 다룹니다.</p>
             </div>
           </div>
 
@@ -950,10 +994,7 @@
             <div class="timeline-badge">TRILOGY II<br />EP IV - VI</div>
             <div class="timeline-content">
               <h3>오리지널 삼부작</h3>
-              <p>
-                루크 스카이워커를 중심으로 반란군과 제국의 대결이 전개됩니다.
-                스타워즈의 상징성과 대중적 인지도를 만든 핵심 축입니다.
-              </p>
+              <p>루크 스카이워커를 중심으로 반란군과 제국의 대결이 전개됩니다.</p>
             </div>
           </div>
 
@@ -961,24 +1002,20 @@
             <div class="timeline-badge">TRILOGY III<br />EP VII - IX</div>
             <div class="timeline-content">
               <h3>시퀄 삼부작</h3>
-              <p>
-                새로운 세대의 주인공들이 등장하며 스카이워커 사가를 마무리합니다.
-                전통과 계승, 새로운 시대의 의미를 다시 묻는 구조입니다.
-              </p>
+              <p>새로운 세대의 인물들이 등장하며 스카이워커 사가를 마무리합니다.</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="ending" class="cta reveal">
+      <section class="cta reveal">
         <div class="cta-box">
           <h2>May the Force be with you.</h2>
           <p>
-            이 페이지는 AI 협의체의 Vibe Coding 과제를 위해 제작된 스타워즈 소개 홈페이지입니다.
-            단일 <strong>index.html</strong> 파일만으로도 충분히 인상적인 결과물을 만들 수 있다는 점을 보여주기 위해
-            비주얼, 정보 구조, 반응형 구성, 애니메이션 요소를 함께 반영했습니다.
+            인물 이미지, 관련 이미지 갤러리, 그리고 배경음악까지 추가해
+            좀 더 풍부하고 인상적인 스타워즈 소개 홈페이지로 확장한 버전입니다.
           </p>
-          <a href="#top" class="btn btn-primary" onclick="window.scrollTo({top:0, behavior:'smooth'}); return false;">맨 위로 이동</a>
+          <a href="#top" class="btn btn-primary">맨 위로 이동</a>
         </div>
       </section>
     </main>
@@ -998,6 +1035,41 @@
     }, { threshold: 0.12 });
 
     document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+    const bgMusic = document.getElementById('bgMusic');
+    const musicToggle = document.getElementById('musicToggle');
+
+    let isPlaying = false;
+
+    async function playMusic() {
+      try {
+        await bgMusic.play();
+        isPlaying = true;
+        musicToggle.textContent = '🔊 음악 끄기';
+      } catch (e) {
+        isPlaying = false;
+        musicToggle.textContent = '▶ 음악 재생';
+      }
+    }
+
+    function stopMusic() {
+      bgMusic.pause();
+      isPlaying = false;
+      musicToggle.textContent = '▶ 음악 재생';
+    }
+
+    musicToggle.addEventListener('click', async () => {
+      if (isPlaying) {
+        stopMusic();
+      } else {
+        await playMusic();
+      }
+    });
+
+    window.addEventListener('load', async () => {
+      bgMusic.volume = 0.35;
+      await playMusic();
+    });
   </script>
 </body>
 </html>
